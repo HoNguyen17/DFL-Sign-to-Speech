@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dfl;
+
+service DFLService {
+  rpc GossipWeights (WeightRequest) returns (WeightResponse);
+}
+
+message WeightRequest {
+  int32 node_id = 1;
+  bytes model_data = 2;
+  int32 sample_count = 3;
+}
+
+message WeightResponse {
+  bool success = 1;
+}

@@ -1,0 +1,26 @@
+# Virtual Environments
+venv/
+**/venv/
+.venv/
+**/.venv/
+
+# Large Media Files (>100MB limit on GitHub)
+*.mp4
+*.mkv
+*.avi
+
+# Python cache & build files
+__pycache__/
+/**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+
+# Checkpoint / export temp files (optional)
+# checkpoints/

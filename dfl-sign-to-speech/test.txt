@@ -1,0 +1,6 @@
+docker compuse up
+# From the project folder:
+.\venv\Scripts\Activate.ps1
+streamlit run app_tester.py
+# OR without activating the venv:
+.\venv\Scripts\streamlit run app_tester.py

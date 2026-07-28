@@ -1,0 +1,137 @@
+services:
+  node1:
+    build: .
+    volumes:
+      - .:/app
+      - ./data_shards/node1:/app/data
+      - ./checkpoints/node1:/app/checkpoints/node1
+      - ./exported_models:/app/exported_models
+      - ./global_val:/app/global_val:ro
+    environment:
+      - NODE_ID=1
+      - NEIGHBORS=node2,node3,node4,node5
+      - LOCAL_EPOCHS=5
+      - GOSSIP_INTERVAL=10
+      - MAX_ROUNDS=30
+      - NUM_CLASSES=26
+      - MODEL_TYPE=image
+      - TF_CPU_ALLOCATOR_USE_BFC=1
+      - TF_BFC_ALLOCATOR_LIMIT_MB=400
+      - TF_CPP_MIN_LOG_LEVEL=2
+      - TF_ENABLE_ONEDNN_OPTS=0
+      # Phase 1 (rounds 1-14): head only. Phase 2 (rounds 15-30): top-30 backbone layers.
+      - FINE_TUNE_ROUND=15
+      - BATCH_SIZE=8
+      - GLOBAL_VAL_DIR=/app/global_val
+    mem_limit: 2200m
+    memswap_limit: 2200m
+
+  node2:
+    build: .
+    volumes:
+      - .:/app
+      - ./data_shards/node2:/app/data
+      - ./checkpoints/node2:/app/checkpoints/node2
+      - ./exported_models:/app/exported_models
+      - ./global_val:/app/global_val:ro
+    environment:
+      - NODE_ID=2
+      - NEIGHBORS=node1,node3,node4,node5
+      - LOCAL_EPOCHS=5
+      - GOSSIP_INTERVAL=10
+      - MAX_ROUNDS=30
+      - NUM_CLASSES=26
+      - MODEL_TYPE=image
+      - TF_CPU_ALLOCATOR_USE_BFC=1
+      - TF_BFC_ALLOCATOR_LIMIT_MB=400
+      - TF_CPP_MIN_LOG_LEVEL=2
+      - TF_ENABLE_ONEDNN_OPTS=0
+      - FINE_TUNE_ROUND=15
+      - BATCH_SIZE=8
+      - GLOBAL_VAL_DIR=/app/global_val
+    mem_limit: 2200m
+    memswap_limit: 2200m
+    # Reduced stagger: 15s instead of 30s. Nodes resume from checkpoints so
+    # the long original delays were only needed on the very first cold start.
+    command: sh -c "sleep 15 && python app/node.py"
+
+  node3:
+    build: .
+    volumes:
+      - .:/app
+      - ./data_shards/node3:/app/data
+      - ./checkpoints/node3:/app/checkpoints/node3
+      - ./exported_models:/app/exported_models
+      - ./global_val:/app/global_val:ro
+    environment:
+      - NODE_ID=3
+      - NEIGHBORS=node1,node2,node4,node5
+      - LOCAL_EPOCHS=5
+      - GOSSIP_INTERVAL=10
+      - MAX_ROUNDS=30
+      - NUM_CLASSES=26
+      - MODEL_TYPE=image
+      - TF_CPU_ALLOCATOR_USE_BFC=1
+      - TF_BFC_ALLOCATOR_LIMIT_MB=400
+      - TF_CPP_MIN_LOG_LEVEL=2
+      - TF_ENABLE_ONEDNN_OPTS=0
+      - FINE_TUNE_ROUND=15
+      - BATCH_SIZE=8
+      - GLOBAL_VAL_DIR=/app/global_val
+    mem_limit: 2200m
+    memswap_limit: 2200m
+    command: sh -c "sleep 30 && python app/node.py"
+
+  node4:
+    build: .
+    volumes:
+      - .:/app
+      - ./data_shards/node4:/app/data
+      - ./checkpoints/node4:/app/checkpoints/node4
+      - ./exported_models:/app/exported_models
+      - ./global_val:/app/global_val:ro
+    environment:
+      - NODE_ID=4
+      - NEIGHBORS=node1,node2,node3,node5
+      - LOCAL_EPOCHS=5
+      - GOSSIP_INTERVAL=10
+      - MAX_ROUNDS=30
+      - NUM_CLASSES=26
+      - MODEL_TYPE=image
+      - TF_CPU_ALLOCATOR_USE_BFC=1
+      - TF_BFC_ALLOCATOR_LIMIT_MB=400
+      - TF_CPP_MIN_LOG_LEVEL=2
+      - TF_ENABLE_ONEDNN_OPTS=0
+      - FINE_TUNE_ROUND=15
+      - BATCH_SIZE=8
+      - GLOBAL_VAL_DIR=/app/global_val
+    mem_limit: 2200m
+    memswap_limit: 2200m
+    command: sh -c "sleep 45 && python app/node.py"
+
+  node5:
+    build: .
+    volumes:
+      - .:/app
+      - ./data_shards/node5:/app/data
+      - ./checkpoints/node5:/app/checkpoints/node5
+      - ./exported_models:/app/exported_models
+      - ./global_val:/app/global_val:ro
+    environment:
+      - NODE_ID=5
+      - NEIGHBORS=node1,node2,node3,node4
+      - LOCAL_EPOCHS=5
+      - GOSSIP_INTERVAL=10
+      - MAX_ROUNDS=30
+      - NUM_CLASSES=26
+      - MODEL_TYPE=image
+      - TF_CPU_ALLOCATOR_USE_BFC=1
+      - TF_BFC_ALLOCATOR_LIMIT_MB=400
+      - TF_CPP_MIN_LOG_LEVEL=2
+      - TF_ENABLE_ONEDNN_OPTS=0
+      - FINE_TUNE_ROUND=15
+      - BATCH_SIZE=8
+      - GLOBAL_VAL_DIR=/app/global_val
+    mem_limit: 2200m
+    memswap_limit: 2200m
+    command: sh -c "sleep 60 && python app/node.py"
